@@ -10,12 +10,12 @@ using namespace std;
 //	Concept of codec architecture
 //	
 
-// Возвращает знак числа
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°Рє С‡РёСЃР»Р°
 #ifndef sign
 #define sign(d) ((d>=0)?1:-1)
 #endif
 
-// Округление (для обхода ошибок машинного округления)
+// РћРєСЂСѓРіР»РµРЅРёРµ (РґР»СЏ РѕР±С…РѕРґР° РѕС€РёР±РѕРє РјР°С€РёРЅРЅРѕРіРѕ РѕРєСЂСѓРіР»РµРЅРёСЏ)
 const double g_dErrVal = 0.0000000001;
 
 //-------------------------------------------------------------------------------------------------
@@ -34,24 +34,24 @@ struct SpeedUpSignalSpline
 	void operator()( const _SourceT& _Arg )
 	{
 		if( IsFirstIteration() )
-		{ // Первая итерация: достраивание предыстории
+		{ // РџРµСЂРІР°СЏ РёС‚РµСЂР°С†РёСЏ: РґРѕСЃС‚СЂР°РёРІР°РЅРёРµ РїСЂРµРґС‹СЃС‚РѕСЂРёРё
 			_SourceT aFirstDif = _Arg - m_aPrev;
 			m_aPrev2 = m_aPrev - aFirstDif;
 			m_aPrev3 = m_aPrev2 - aFirstDif;
 		}
 
-		// Получение первых производных
+		// РџРѕР»СѓС‡РµРЅРёРµ РїРµСЂРІС‹С… РїСЂРѕРёР·РІРѕРґРЅС‹С…
 		double dYADif = 0;
 		double dYBDif = 0;
 		CreateSplineItem( m_aPrev3, m_aPrev2, m_aPrev, dYADif );
 		CreateSplineItem( m_aPrev2, m_aPrev, _Arg, dYBDif );
 
-		// Расчёт основных параметров сплайна
+		// Р Р°СЃС‡С‘С‚ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ СЃРїР»Р°Р№РЅР°
 		double dYDif2 = 0;
 		double dD = 0;
 		CalcSplineParams( m_aPrev, _Arg, dYADif, dYBDif, dYDif2, dD );
 
-		// Восстановление сплайна с нужной частотой дискретизации
+		// Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ СЃРїР»Р°Р№РЅР° СЃ РЅСѓР¶РЅРѕР№ С‡Р°СЃС‚РѕС‚РѕР№ РґРёСЃРєСЂРµС‚РёР·Р°С†РёРё
 		ReconstructSplineBetween( m_aPrev, _Arg, dYADif, dYBDif, dYDif2, dD, 1.0 / m_nAFD );
 
 		m_aPrev3 = m_aPrev2;
@@ -66,11 +66,11 @@ private:
 
 	void CalcSplineParams( const double &dYA, const double &dYB, const double &dYADif, const double &dYBDif, double &dYDif2, double &dD ) const
 	{
-		// Получение основных параметров сплайна
+		// РџРѕР»СѓС‡РµРЅРёРµ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ СЃРїР»Р°Р№РЅР°
 		double A = dYBDif - dYADif;
 		const double B = dYB - dYA - dYADif;
 
-		// (возьмём точность до 9 знака)
+		// (РІРѕР·СЊРјС‘Рј С‚РѕС‡РЅРѕСЃС‚СЊ РґРѕ 9 Р·РЅР°РєР°)
 		if( fabs( A ) < g_dErrVal ) A = 0;
 
 		if( A == 0 )
@@ -98,8 +98,8 @@ private:
 		while( x_cur < 1 )
 		{
 			dPt = ( x_cur < dD )
-				? dPt = dYA + dYADif * x_cur - pow( x_cur, 2 ) * dYDif2 / 2						// Сплайн до точки перегиба
-				: dPt = dYB - dYBDif * ( 1 - x_cur ) + pow( ( 1 - x_cur ), 2 ) * dYDif2 / 2;	// Сплайн после точки перегиба
+				? dPt = dYA + dYADif * x_cur - pow( x_cur, 2 ) * dYDif2 / 2						// РЎРїР»Р°Р№РЅ РґРѕ С‚РѕС‡РєРё РїРµСЂРµРіРёР±Р°
+				: dPt = dYB - dYBDif * ( 1 - x_cur ) + pow( ( 1 - x_cur ), 2 ) * dYDif2 / 2;	// РЎРїР»Р°Р№РЅ РїРѕСЃР»Рµ С‚РѕС‡РєРё РїРµСЂРµРіРёР±Р°
 			m_aDest.push_back( _DestT::value_type( dPt ) );
 			x_cur += dt_cur;
 		}	
@@ -291,3 +291,4 @@ typedef	vector <int> MyDestData;
 //
 //	Concept of codec architecture
 //	{{
+
